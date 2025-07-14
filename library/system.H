@@ -1,47 +1,47 @@
 
-#define vdd_degree01			355//0ºÍ1µÈ¼¶·Ö½çÏß
-#define vdd_degree12			385//1ºÍ2µÈ¼¶·Ö½çÏß
-//#define vdd_degree23			380//2ºÍ3µÈ¼¶·Ö½çÏß
+#define vdd_degree01			355//0å’Œ1ç­‰çº§åˆ†ç•Œçº¿
+#define vdd_degree12			385//1å’Œ2ç­‰çº§åˆ†ç•Œçº¿
+//#define vdd_degree23			380//2å’Œ3ç­‰çº§åˆ†ç•Œçº¿
 
-#define USB_charging			1   //USB ³äµçIC³äµç
-#define Screw_charging			2	//ÂİÎÆÍ·³äµç
-//#define charge_Type				Screw_charging  	//Ñ¡ÔñÂİÎÆÍ·³äµç
-#define charge_Type				USB_charging  	//Ñ¡ÔñUSB³äµç
+#define USB_charging			1   //USB å……ç”µICå……ç”µ
+#define Screw_charging			2	//èºçº¹å¤´å……ç”µ
+//#define charge_Type				Screw_charging  	//é€‰æ‹©èºçº¹å¤´å……ç”µ
+#define charge_Type				USB_charging  	//é€‰æ‹©USBå……ç”µ
 
-#define Check_off_charge_slow 	1 	//³äµç¶Ï¿ª¼ì²âÊÇ2sÒ»´ÎgpioÅĞ¶¨£¬¹Ø¶ÏÊ±¼ä100ms
-#define Check_off_charge_fast 	2 	//³äµç¶Ï¿ª¼ì²âÊÇ20msÒ»´ÎADÅĞ¶¨£¬¹Ø¶ÏÊ±¼ä2ms
-#define charge_no_use		 	3 	//Ã»ÓÃµ½ÂİÎÆÍ·¶Ï¿ª³äµç¹¦ÄÜ
+#define Check_off_charge_slow 	1 	//å……ç”µæ–­å¼€æ£€æµ‹æ˜¯2sä¸€æ¬¡gpioåˆ¤å®šï¼Œå…³æ–­æ—¶é—´100ms
+#define Check_off_charge_fast 	2 	//å……ç”µæ–­å¼€æ£€æµ‹æ˜¯20msä¸€æ¬¡ADåˆ¤å®šï¼Œå…³æ–­æ—¶é—´2ms
+#define charge_no_use		 	3 	//æ²¡ç”¨åˆ°èºçº¹å¤´æ–­å¼€å……ç”µåŠŸèƒ½
 
 #if(charge_Type == Screw_charging)
-	#define Screw_charge_off_mode	 Check_off_charge_fast	//Ñ¡ÔñÂİÎÆÍ·³äµçµÄ¶Ï¿ª¼ì²âÄ£Ê½
+	#define Screw_charge_off_mode	 Check_off_charge_fast	//é€‰æ‹©èºçº¹å¤´å……ç”µçš„æ–­å¼€æ£€æµ‹æ¨¡å¼
 #elseif(charge_Type == USB_charging)
-	#define Screw_charge_off_mode	 charge_no_use	//Ã»ÓÃµ½ÂİÎÆÍ·¶Ï¿ª³äµç¹¦ÄÜ
+	#define Screw_charge_off_mode	 charge_no_use	//æ²¡ç”¨åˆ°èºçº¹å¤´æ–­å¼€å……ç”µåŠŸèƒ½
 #endif
 
-#define VDD_low_data			325	//3.1VµÍ±£µçÑ¹µã
-#define VDD_smoking_low_data	270	//2.9VÎüÑÌ¹ı³ÌÖĞµÄµÍ±£µçÑ¹µã
-#define VDD_full_data 			412	//4.18V³äÂúµçÑ¹µã
-#define smoke_time_up_data		1900//*5mS = ÎüÑÌ³¬Ê±Ê±¼ä³¤¶È
-#define pre_heat_time_up_data	3000//*5mS = Ô¤ÈÈÊ±¼ä³¤¶È
-#define charge_time_up_data		10800//µ¥Î»ÊÇÃë£¬×Ü¹²3Ğ¡Ê±£¬³äµçÇ¿ÖÆÅĞÂúÊ±¼ä³¤¶È
-#define	blink_lock				1//¿ª»úËø»úÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_get_charge		0//³äµçÁ¬½ÓÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_off_charge		0//³äµç¶Ï¿ªÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_low				10//µÍÑ¹±£»¤ÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_smoking_low		0//ÎüÑÌ¹ı³ÌÖĞµÄµÍÑ¹±£»¤ÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_full				0//³äÂúÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_overload			3//¶ÌÂ·±£»¤ÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_smoke_time_up		4//ÎüÑÌ³¬Ê±ÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_poweron			3//ÉÏµçÌáÊ¾ÉÁË¸´ÎÊı
-#define blink_lowload			3//ÎŞÔØ»òµÍ¸ºÔØÉÁË¸´ÎÊı
-#define blink_degree_select		3//µµÎ»Ñ¡ÔñÉÁµÆ´ÎÊı
+#define VDD_low_data			325	//3.1Vä½ä¿ç”µå‹ç‚¹
+#define VDD_smoking_low_data	270	//2.9Vå¸çƒŸè¿‡ç¨‹ä¸­çš„ä½ä¿ç”µå‹ç‚¹
+#define VDD_full_data 			412	//4.18Vå……æ»¡ç”µå‹ç‚¹
+#define smoke_time_up_data		1900//*5mS = å¸çƒŸè¶…æ—¶æ—¶é—´é•¿åº¦
+#define pre_heat_time_up_data	3000//*5mS = é¢„çƒ­æ—¶é—´é•¿åº¦
+#define charge_time_up_data		10800//å•ä½æ˜¯ç§’ï¼Œæ€»å…±3å°æ—¶ï¼Œå……ç”µå¼ºåˆ¶åˆ¤æ»¡æ—¶é—´é•¿åº¦
+#define	blink_lock				1//å¼€æœºé”æœºæç¤ºé—ªçƒæ¬¡æ•°
+#define blink_get_charge		0//å……ç”µè¿æ¥æç¤ºé—ªçƒæ¬¡æ•°
+#define blink_off_charge		0//å……ç”µæ–­å¼€æç¤ºé—ªçƒæ¬¡æ•°
+#define blink_low				10//ä½å‹ä¿æŠ¤æç¤ºé—ªçƒæ¬¡æ•°
+#define blink_smoking_low		0//å¸çƒŸè¿‡ç¨‹ä¸­çš„ä½å‹ä¿æŠ¤æç¤ºé—ªçƒæ¬¡æ•°
+#define blink_full				0//å……æ»¡æç¤ºé—ªçƒæ¬¡æ•°
+#define blink_overload			3//çŸ­è·¯ä¿æŠ¤æç¤ºé—ªçƒæ¬¡æ•°
+#define blink_smoke_time_up		4//å¸çƒŸè¶…æ—¶æç¤ºé—ªçƒæ¬¡æ•°
+#define blink_poweron			3//ä¸Šç”µæç¤ºé—ªçƒæ¬¡æ•°
+#define blink_lowload			3//æ— è½½æˆ–ä½è´Ÿè½½é—ªçƒæ¬¡æ•°
+#define blink_degree_select		3//æ¡£ä½é€‰æ‹©é—ªç¯æ¬¡æ•°
 
-#define mos_duty_max			200//mos¹Üpwm×î´óÕ¼¿Õ±È
+#define mos_duty_max			200//mosç®¡pwmæœ€å¤§å ç©ºæ¯”
 #define led_duty_max			100
 
-#define sleep_delay_time 		161	//*5msÑÓÊ±0.8SË¯Ãß
-#define show_vdd_delay_time		160//*5msÑÓÊ±0.8S½øĞĞµçÁ¿ÏÔÊ¾
-#define load_delay_time			40//*5msÑÓÊ±0.2s¸ºÔØ¼ì²â
+#define sleep_delay_time 		161	//*5mså»¶æ—¶0.8Sç¡çœ 
+#define show_vdd_delay_time		160//*5mså»¶æ—¶0.8Sè¿›è¡Œç”µé‡æ˜¾ç¤º
+#define load_delay_time			40//*5mså»¶æ—¶0.2sè´Ÿè½½æ£€æµ‹
 
 #define mos_working_key1		0xAA
 #define mos_working_key2		0x55
@@ -59,7 +59,8 @@ extern byte charge_disconnect_count_fast;
 
 extern byte r_system_flag;
 extern bit flag_sleep;//			:r_system_flag.0	
-extern bit flag_mos;//				:r_system_flag.1//µ±Ç°µÄmosÊÇ·ñ´ò¿ª£¬¾ö¶¨¹ıÔØ±£»¤ÊÇ·ñÒª¹¤×÷
+extern bit flag_charge_pause;//         :r_system_flag2.6
+extern bit flag_mos;//				:r_system_flag.1//å½“å‰çš„mosæ˜¯å¦æ‰“å¼€ï¼Œå†³å®šè¿‡è½½ä¿æŠ¤æ˜¯å¦è¦å·¥ä½œ
 extern bit flag_smoking;//			:r_system_flag.2
 extern bit flag_overload;//			:r_system_flag.3
 extern bit flag_full;//				:r_system_flag.4
