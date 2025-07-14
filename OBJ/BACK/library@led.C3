@@ -1,0 +1,442 @@
+
+
+#include	"../define.h"
+
+//#define blink_keep_time		45//此处调整闪烁周期，T = blink_keep_time*5ms*2
+#define degree_delay_time	250
+
+/*
+#define degree_max			3
+
+#define degree_data4		415+5
+#define degree_data3		380+5
+#define degree_data2		350+5
+#define degree_data1		320+5
+*/
+//#define v_charge_off		420
+
+
+
+byte led_blink_count;
+byte led_blink_delay;
+byte led_blink_half_circle;
+byte led_duty,led_r_duty,led_g_duty,led_b_duty;
+byte led_count,led_delay_count,led_turn;
+byte led_duty_delay;
+
+
+byte duty_change_delay;
+byte led_delay;
+word led_on_delay;
+
+
+byte r_led_flag;
+bit flag_blink_force	:r_led_flag.0;
+bit flag_led			:r_led_flag.1;
+bit flag_led_w			:r_led_flag.2;
+bit flag_led_b			:r_led_flag.3;
+bit flag_led_r			:r_led_flag.4;
+bit flag_led_wbr		:r_led_flag.5;
+bit flag_led_gb			:r_led_flag.6;
+bit flag_led_rb			:r_led_flag.7;
+
+byte r_led_flag1;
+bit flag_led_rg			:r_led_flag1.0;
+bit flag_led_g			:r_led_flag1.1;
+
+
+void reset_show_vdd();
+void preheat_slow_change(void);
+void preheat_slow_change2(void);
+void preheat_blink(void);
+
+//-------------------------------------//
+//---------------亮灯------------------//
+//-------------------------------------//
+void led_on(void)
+{
+	flag_led = 1;
+//	p_led_on;
+}
+//-------------------------------------//
+//---------------灭灯------------------//
+//-------------------------------------//
+void led_off(void)
+{
+	flag_led = 0;
+//	p_led_off;
+}
+
+//-------------------------------------//
+//---------------灯输出----------------//
+//-------------------------------------//
+void led_output(void)
+{
+	if(led_blink_count)
+	{
+		if((led_blink_count.0) && (!flag_poweron))
+		{
+			led_duty = 0;
+//			p_led_off;
+		}
+		else
+		{
+			led_duty = led_duty_max;
+//			p_led_on;
+		}
+		led_blink_delay ++;
+		if(led_blink_delay >= led_blink_half_circle)
+		{
+			led_blink_delay = 0;
+			led_blink_count --;
+			if(led_blink_count == 0)
+			{
+				flag_blink_force = 0;	//解除强制闪烁
+				led_blink_half_circle = 50;
+				flag_led = 0;
+				flag_poweron = 0;
+				clear_led_select();
+				led_on_delay = 0;
+			}
+		}
+	}
+	else if(led_on_delay)
+	{
+		led_on_delay --;
+		if(led_on_delay)	led_duty = led_duty_max;
+		else				led_duty = 0;
+	}
+	else
+	{
+		led_blink_delay = 0;
+		if(!flag_pre_heat)
+		{
+//			led_delay ++;
+//			if(led_delay.0)
+			{
+				if(flag_led)
+				{
+					led_duty = led_duty_max;
+//					if(led_duty < led_duty_max)
+					{
+//						led_duty ++;
+					}
+				}
+				else
+				{
+					led_duty = 0;
+//					if(led_duty)
+					{
+//						led_duty --;
+					}
+				}
+			}
+			led_delay_count = 0;
+			led_turn = 0;
+		}
+		else
+		{
+//			preheat_blink();
+//			preheat_slow_change();
+			preheat_slow_change2();
+			return;
+
+		}
+	}
+
+	if(led_duty)
+	{
+		if(flag_led_r)
+		{
+			/*121*/
+			led_r_duty = led_duty >> 1;
+//			led_r_duty += led_duty >> 2;
+			/*363* /
+			led_r_duty = led_duty;	*/
+			led_g_duty = 0;
+			led_b_duty = 0;
+		}
+		else if(flag_led_g)
+		{
+			led_r_duty = 0;
+			led_g_duty = led_duty >> 1;
+//			led_g_duty += led_duty >> 2;
+			led_b_duty = 0;
+		}
+		else if(flag_led_b)
+		{
+			led_r_duty = 0;
+			led_g_duty = 0;
+			led_b_duty = led_duty >> 1;
+//			led_b_duty += led_duty >> 2;
+		}
+		else if(flag_led_gb)
+		{
+			a = led_duty >> 1;
+			led_r_duty = 0;
+			led_b_duty = a;
+			led_g_duty = a;
+		}
+		else if(flag_led_rb)
+		{
+			/*121*/
+			a = led_duty >> 1;
+			led_r_duty = a;
+			/*363* /
+			a = led_duty;
+			led_r_duty = a;
+			a >>= 2;*/
+
+			led_b_duty = a;
+			led_g_duty = 0;
+		}
+		else if(flag_led_rg)
+		{
+			/*121*/
+			a = led_duty >> 1;
+			led_r_duty = a;
+			/*363* /
+			a = led_duty;
+			led_r_duty = a;
+			a >>= 2;*/
+
+			led_b_duty = 0;
+			led_g_duty = a;
+		}
+		else if(flag_led_w)
+		{
+			/*121*/
+			a = led_duty >> 1;
+			led_g_duty = a;
+//			a >>= 1;
+			led_r_duty = a;
+			led_b_duty = a;
+		}
+		else if(flag_led_wbr)
+		{
+			a = led_duty >> 1;
+			led_r_duty = a;
+			led_b_duty = a;
+			led_g_duty = a >> 1;
+		}
+		else
+		{
+			led_r_duty = 0;
+			led_g_duty = 0;
+			led_b_duty = 0;
+		}
+	}
+	else
+	{
+		led_r_duty = 0;
+		led_g_duty = 0;
+		led_b_duty = 0;
+	}
+}
+
+
+
+
+void preheat_blink(void)
+{
+	led_duty = led_duty_max;
+	led_delay_count ++;
+	if(led_delay_count >= 61)
+	{
+		led_delay_count = 0;
+		led_turn ++;
+		if(led_turn >= 3)
+		{
+			led_turn = 0;
+		}
+	}
+	if(led_turn)
+	{
+		if(led_turn == 1)
+		{
+			flag_led_w = 0;
+			flag_led_b = 1;
+			flag_led_r = 0;
+		}
+		else 
+		{
+			flag_led_w = 1;
+			flag_led_b = 0;
+			flag_led_r = 0;
+		}
+	}
+	else
+	{
+		flag_led_w = 0;
+		flag_led_b = 0;
+		flag_led_r = 1;
+	}		
+}
+
+void preheat_slow_change(void)
+{
+	led_delay_count ++;
+	if((led_delay_count != 2) && (led_delay_count != 5))//这段是预热渐变代码//12.5*5ms duty++
+	{
+		return;
+	}
+	if(led_delay_count == 5)
+	{
+		led_delay_count = 0;
+	}
+	if(led_turn.0)
+	{
+		if(led_duty)
+		{
+			led_duty --;
+		}
+		else
+		{
+			led_turn ++;
+		}
+	}
+	else
+	{
+		if(led_duty < (led_duty_max))
+		{
+			led_duty ++;
+		}
+		else
+		{
+			led_turn ++;
+		}
+	}
+	if((led_duty == 0) || (led_duty == 1))
+	{
+		clear_led_select();
+		switch(led_turn)
+		{
+		case 0:
+		case 1:
+			flag_led_r = 1;
+			break;
+		case 2:
+		case 3:
+			flag_led_rg = 1;
+			break;
+		case 4:
+		case 5:
+			flag_led_g = 1;
+			break;
+		case 6:
+		case 7:
+			flag_led_b = 1;
+			break;
+		case 8:
+		case 9:
+			flag_led_gb = 1;
+			break;
+		case 10:
+		case 11:
+			flag_led_rb = 1;
+			break;
+		default:
+			led_turn = 0;
+		}
+	}
+}
+
+void preheat_slow_change2(void)
+{
+	led_delay_count ++;
+	if(led_delay_count < 5)
+	{
+		return;
+	}
+	led_delay_count = 0;
+	switch(led_turn)
+	{
+	case 0:
+		led_g_duty = 0;
+		led_b_duty = 0;
+		led_r_duty ++;
+		if(led_r_duty >= led_duty_max)
+		{
+			led_turn ++;
+		}
+		break;
+	case 1:
+		led_r_duty = led_duty_max;
+		led_b_duty = 0;
+		led_g_duty ++;
+		if(led_g_duty >= led_duty_max)
+		{
+			led_turn ++;
+		}
+		break;
+	case 2:
+		led_g_duty = led_duty_max;
+		led_b_duty = 0;
+		led_r_duty --;
+		if(led_r_duty == 0)
+		{
+			led_turn ++;
+		}
+		break;
+	case 3:
+		led_g_duty = led_duty_max;
+		led_r_duty = 0;
+		led_b_duty ++;
+		if(led_b_duty >= led_duty_max)
+		{
+			led_turn ++;
+		}
+		break;
+	case 4:
+		led_b_duty = led_duty_max;
+		led_r_duty = 0;
+		led_g_duty --;
+		if(led_g_duty == 0)
+		{
+			led_turn ++;
+		}
+		break;
+	case 5:
+		led_g_duty = 0;
+		led_b_duty = led_duty_max;
+		led_r_duty ++;
+		if(led_r_duty >= led_duty_max)
+		{
+			led_turn ++;
+		}
+		break;
+	case 6:
+		led_g_duty = 0;
+		led_r_duty = led_duty_max;
+		led_b_duty --;
+		if(led_b_duty == 0)
+		{
+			led_turn ++;
+		}
+		break;
+	case 7:
+		led_g_duty = 0;
+		led_b_duty = 0;
+		led_r_duty --;
+		if(led_r_duty == 0)
+		{
+			led_turn = 0;
+		}
+		break;
+	default:
+		led_turn = 0;
+	}
+}
+
+
+void clear_led_select(void)
+{
+	flag_led_r = 0;
+	flag_led_rg = 0;
+	flag_led_g = 0;
+	flag_led_b = 0;
+	flag_led_gb = 0;
+	flag_led_rb = 0;
+	flag_led_w = 0;
+	flag_led_wbr = 0;
+}

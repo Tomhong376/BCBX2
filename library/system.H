@@ -1,0 +1,94 @@
+
+#define vdd_degree01			355//0和1等级分界线
+#define vdd_degree12			385//1和2等级分界线
+//#define vdd_degree23			380//2和3等级分界线
+
+#define USB_charging			1   //USB 充电IC充电
+#define Screw_charging			2	//螺纹头充电
+//#define charge_Type				Screw_charging  	//选择螺纹头充电
+#define charge_Type				USB_charging  	//选择USB充电
+
+#define Check_off_charge_slow 	1 	//充电断开检测是2s一次gpio判定，关断时间100ms
+#define Check_off_charge_fast 	2 	//充电断开检测是20ms一次AD判定，关断时间2ms
+#define charge_no_use		 	3 	//没用到螺纹头断开充电功能
+
+#if(charge_Type == Screw_charging)
+	#define Screw_charge_off_mode	 Check_off_charge_fast	//选择螺纹头充电的断开检测模式
+#elseif(charge_Type == USB_charging)
+	#define Screw_charge_off_mode	 charge_no_use	//没用到螺纹头断开充电功能
+#endif
+
+#define VDD_low_data			325	//3.1V低保电压点
+#define VDD_smoking_low_data	270	//2.9V吸烟过程中的低保电压点
+#define VDD_full_data 			412	//4.18V充满电压点
+#define smoke_time_up_data		1900//*5mS = 吸烟超时时间长度
+#define pre_heat_time_up_data	3000//*5mS = 预热时间长度
+#define charge_time_up_data		10800//单位是秒，总共3小时，充电强制判满时间长度
+#define	blink_lock				1//开机锁机提示闪烁次数
+#define blink_get_charge		0//充电连接提示闪烁次数
+#define blink_off_charge		0//充电断开提示闪烁次数
+#define blink_low				10//低压保护提示闪烁次数
+#define blink_smoking_low		0//吸烟过程中的低压保护提示闪烁次数
+#define blink_full				0//充满提示闪烁次数
+#define blink_overload			3//短路保护提示闪烁次数
+#define blink_smoke_time_up		4//吸烟超时提示闪烁次数
+#define blink_poweron			3//上电提示闪烁次数
+#define blink_lowload			3//无载或低负载闪烁次数
+#define blink_degree_select		3//档位选择闪灯次数
+
+#define mos_duty_max			200//mos管pwm最大占空比
+#define led_duty_max			100
+
+#define sleep_delay_time 		161	//*5ms延时0.8S睡眠
+#define show_vdd_delay_time		160//*5ms延时0.8S进行电量显示
+#define load_delay_time			40//*5ms延时0.2s负载检测
+
+#define mos_working_key1		0xAA
+#define mos_working_key2		0x55
+#define mos_working_key3		0x3C
+extern byte mos_working_mark1;
+extern byte mos_working_mark2;
+extern byte mos_working_mark3;
+extern byte degree_bk;
+
+extern byte vdd_degree;
+extern byte lowload_delay_count;
+extern byte V_out_degree;
+extern byte char_disconnect_check_delay;
+extern byte charge_disconnect_count_fast;
+
+extern byte r_system_flag;
+extern bit flag_sleep;//			:r_system_flag.0	
+extern bit flag_mos;//				:r_system_flag.1//当前的mos是否打开，决定过载保护是否要工作
+extern bit flag_smoking;//			:r_system_flag.2
+extern bit flag_overload;//			:r_system_flag.3
+extern bit flag_full;//				:r_system_flag.4
+extern bit flag_charge;//			:r_system_flag.5
+extern bit flag_charge_ready;//		:r_system_flag.2
+
+extern bit flag_poweron_test_full;//:r_system_flag1.1
+extern bit flag_VDD_charging;//:r_system_flag1.2
+extern bit flag_finish_show_vdd;//:r_system_flag1.3
+extern bit flag_show_vdd;//:r_system_flag1.4
+extern bit flag_lowload;//:r_system_flag1.5
+extern bit flag_open_mos;//:r_system_flag1.6
+extern bit flag_pre_heat;//:r_system_flag1.7
+
+extern bit flag_char_disconn_check;//	:r_system_flag2.0	
+
+
+void system_deal(void);
+void charge_scan(void);
+void charge_check_disconnect(void);
+void protect_check_deal(void);
+void check_low(void);
+void check_full(void);
+void p_check_out0(void);
+void p_check_io_in(void);
+void p_check_ad_in(void);
+
+void mos_on(void);
+void mos_off(void);
+
+void enable_mos_working_mack_ram(void);
+void disable_mos_working_mack_ram(void);
